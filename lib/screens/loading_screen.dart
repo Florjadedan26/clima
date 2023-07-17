@@ -1,8 +1,7 @@
-import 'package:climaa/services/location.dart';
 import 'package:flutter/material.dart';
-import 'package:climaa/services/networking.dart';
-
-const kApiKey = 'e778054a624508542e3cdedfde545807';
+import 'package:climaa/screens/location_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:climaa/services/weather.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -10,34 +9,28 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  double latitude;
-  double longitude;
-
   void initState() {
     super.initState();
     getLocationdata();
   }
 
   void getLocationdata() async {
-    Location newlocation = Location();
-    await newlocation.getCurrentLocation();
-    latitude = newlocation.latitude;
-    longitude = newlocation.longitude;
+  var weatherData = await WeatherModel().getLoacationWeather();
 
-    NetworkHelper networkHelper= NetworkHelper(url: 'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$kApiKey');
-
-    var weather = networkHelper.getData();
-
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return LocationScreen(
+        locationWeather: weatherData,
+      );
+    }));
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {},
-          child: Text('Get Location'),
+        child: SpinKitSpinningLines(
+          color: Colors.white,
+          size: 100.0,
         ),
       ),
     );
